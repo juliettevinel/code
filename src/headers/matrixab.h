@@ -1,0 +1,34 @@
+/*
+ * matrixab.h
+ *
+ *  Created on: Dec 1, 2010
+ *      Author: paant
+ */
+
+#ifndef MATRIXAB_H_
+#define MATRIXAB_H_
+
+
+#include <math.h>
+#include <iostream>
+
+
+//#include "global.h"
+#include "trivialfuncs.h"
+
+
+using namespace std;
+
+void constr_a (double* a, int* pos, double* precond, double** phi, int n, int m, grid cells );
+void constr_b (double* output, double** utilde_i, double** utilde_j, double** rho1, double** rho0, double** rho_new, double** phi1, double** phi0, double** phi_new, double** M_re, int n , int m , double* y_val, grid cells, double dt) ;
+
+int position_oned (int n, int m, int i, int j) ;
+
+double sthcell_a (double** phi, cell pt, grid cells) ;
+double nthcell_a (double** phi, cell pt, grid cells);
+double wstcell_a (double** phi, cell pt, grid cells);
+double estcell_a (double** phi, cell pt, grid cells);
+
+
+
+#endif /* MATRIXAB_H_ */

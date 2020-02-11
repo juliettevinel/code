@@ -1,0 +1,31 @@
+/*
+ * basicfuncs.h
+ *
+ *  Created on: Nov 30, 2010
+ *      Author: paant
+ */
+
+#ifndef BASICFUNCS_H_
+#define BASICFUNCS_H_
+
+#include <iostream>
+#include <math.h>
+
+
+#include "trivialfuncs.h"
+#include "fluxfuncs.h"
+
+
+
+using namespace std;
+
+
+
+void rescompu (vec& output, double** u, double** v, double** phi, double** rho, double** delta_x, double** delta_y, double** mu, double F, int i, int j, grid** cells)  ;
+void deformcompu (vec& tensor, double** u , double** v, double** phi, double** mu, cell pt, grid** cells) ;
+
+void filldelta (double** mat, int dir, int n, int m, double** u, double** phi, double** rho, double** mu ) ;
+
+void filldelta_s (double** mat, int n , int m) ;
+
+#endif /* BASICFUNCS_H_ */
