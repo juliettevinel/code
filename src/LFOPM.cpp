@@ -2,7 +2,7 @@
  * main.cpp
  *
  *  Created on: Nov 29, 2010
- *      Author: paant
+ *      Author: Juliette
  */
 
 #include "./headers/LFOPM.h"
