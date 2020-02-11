@@ -1,0 +1,155 @@
+/*
+ * global.h
+ *
+ *  Created on: Nov 29, 2010
+ *      Author: paant
+ */
+
+#ifndef GLOBAL_H_
+#define GLOBAL_H_
+
+
+#include "readfiles.h"
+
+
+
+/****************
+  COEFFICIENTS
+****************/
+
+
+const double CFL = readdouble("../data/CFL.dat");
+
+
+
+// Reference values for non-dimensionalization :
+
+const double l_ref= readdouble("../data/l_ref.dat");
+const double u_ref= readdouble("../data/u_ref.dat");
+const double rho_ref= readdouble("../data/rho_ref.dat");
+const double mu_ref= readdouble("../data/mu_ref.dat");
+
+//const double Re = rho_ref * u_ref * l_ref / mu_ref ;
+const double Re = readdouble("../data/Re.dat"); ;
+
+const double cp_ref = readdouble("../data/cp_ref.dat");
+const double k_ref = readdouble("../data/k_ref.dat");
+const double T_ref = readdouble("../data/T_ref.dat") ;
+
+//const double Pr = cp_ref * mu_ref / k_ref ;
+const double Pr = readdouble("../data/Pr.dat"); ;
+
+const double Ri = readdouble("../data/Ri.dat");;
+
+//dp : particle diameter for a generic isotropic medium
+const double dp= readdouble("../data/dp.dat");
+
+const double rho_s = readdouble ("../data/rho_s.dat") ;
+const double cp_s = readdouble ("../data/cp_s.dat") ;
+
+
+const double gama = 1.4 ;
+
+
+/***************************
+ **BOUNDARY CONDITION SETS**
+ ***************************/
+
+// defining the P boundary condition (top-right) combination
+// a: top=wall, right=Dirichlet
+// b: top=outflow, right=outflow
+const char Bcomb_p = readchar("../data/bcomb_p.dat");
+
+// defining the U boundary condition (left-right) combination
+// 1: left,right = periodic
+// 2: left=inflow, right=outflow
+const int Bcomb_u = readint("../data/bcomb_u.dat");
+//for V
+const int Bcomb_v = readint("../data/bcomb_v.dat");
+
+// defining the U boundary condition at the top
+// w: top = wall,
+// o: top = outflow
+const char Bcomb_ut = readchar("../data/bcomb_ut.dat");
+//for V
+const char Bcomb_vt = readchar("../data/bcomb_vt.dat");
+
+
+//BOUNDARY CONDITIONS - values
+//bottom always wall
+
+
+// values for P matrix
+	//left - always inflow
+
+	const double vf_fluid = readdouble("../data/phi.dat");
+
+	const char delta_rank = readchar("../data/delta.dat");
+
+	const int forcing = readint("../data/F.dat");
+
+	const double Pval_l = readdouble("../data/pval_l.dat");
+
+
+	//right - either Dirichlet, or Neumann
+	const double Pval_r = readdouble("../data/pval_r.dat");
+	const double Pder_r = readdouble("../data/pder_r.dat");
+
+	const double Tval_t = readdouble("../data/tval_t.dat");
+	const double Tval_b = readdouble("../data/tval_b.dat");
+
+// ENDOF BOUNDARY CONDITION SETS & VALUES
+
+
+
+
+
+
+
+/**************************
+//  STRUCTURE DEFINITIONS
+***************************/
+
+// structure grid : grid parameters & scalar quantities
+
+
+struct grid {
+
+//ri, rj HALF of the rectangular's width or hight
+double *ri;
+double *rj;
+
+} ;
+
+
+
+
+// structure vector : used to help out with the two components of vector equations
+
+struct vec {
+
+double i , j;
+
+};
+
+
+// structure cell : containing the coordinates of a cell in the grid
+
+struct cell {
+	int i  , j;
+};
+
+
+// structure wally : contain the 4 values, one for each wall direction (N,S,E,W)
+
+struct wally {
+
+double n  ,s  ,e , w ;
+
+};
+
+
+
+
+
+#endif /* GLOBAL_H_ */

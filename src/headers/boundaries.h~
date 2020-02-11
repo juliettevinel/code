@@ -1,0 +1,60 @@
+/*
+ * boundaries.h
+ *
+ *  Created on: Dec 4, 2010
+ *      Author: panais
+ */
+
+#ifndef BOUNDARIES_H_
+#define BOUNDARIES_H_
+
+
+#include <iostream>
+#include <math.h>
+#include "global.h"
+
+using namespace std;
+
+
+void top_bound_neu (double** mat, double** rho, int n, int m, double* y_val, grid cells);
+void bot_bound_neu (double** mat, int n , int m, grid cells) ;
+
+//void left_bound_dir (double** mat, double val, int n, int m, grid cells);
+void left_bound_neu (double** mat, int n, int m, grid cells) ;
+void left_bound_perio (double** mat, int n, int m, grid cells);
+
+//void right_bound_dir (double** mat, double val, int n, int m, grid cells);
+void right_bound_neu (double** mat, int n, int m, grid cells);
+void right_bound_perio (double** mat, int n, int m, grid cells);
+
+
+void top_bound_u_wall (double** mat, int n, int m);
+void top_bound_u_neu (double** mat, int n, int m) ;
+void top_bound_u_dir (double** mat, double val, int n, int m, grid cells);
+
+void bot_bound_u_wall (double** mat, int n , int m);
+void bot_bound_u_dir (double** mat, double val, int n, int m, grid cells) ;
+void bot_bound_u_neu (double** mat, int n , int m);
+
+void left_bound_u_perio (double** mat,int n, int m);
+void left_bound_u_dir (double** mat, double* val, int n, int m, grid cells);
+void left_bound_u_neu (double** mat,int n, int m) ;
+
+void right_bound_u_perio (double** mat, int n, int m) ;
+void right_bound_u_neu (double** mat, int n, int m);
+void right_bound_conv (double** mat1, double** mat0, double Uc, int n, int m, grid cells, double dt) ;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+#endif /* BOUNDARIES_H_ */

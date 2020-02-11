@@ -1,0 +1,25 @@
+/*
+ * matrixab_b.h
+ *
+ *  Created on: Jan 11, 2011
+ *      Author: paant
+ */
+
+#ifndef MATRIXAB_C_H_
+#define MATRIXAB_C_H_
+
+
+
+#include <math.h>
+
+#include <iostream>
+
+//#include "global.h"
+#include "trivialfuncs.h"
+#include "matrixab.h"
+
+using namespace std;
+
+void constr_a_c (double* a, int* pos, double* precond, double** phi, int n, int m, grid cells ) ;
+
+#endif /* MATRIXAB_C_H_ */
