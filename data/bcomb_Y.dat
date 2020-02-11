@@ -1,0 +1,7 @@
+2
+
+
+// defining the T boundary condition at the left and right
+
+// 1 : periodic
+// 2 : LEFT Dirichlet / Right Convective

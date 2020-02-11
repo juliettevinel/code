@@ -1,0 +1,7 @@
+o
+
+
+// defining the T boundary condition at the top and bottom
+
+// o : Neumann zero 
+// d : Dirichlet

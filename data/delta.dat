@@ -1,0 +1,12 @@
+c
+
+
+rank/order of the interfacial drag coefficient tensor
+
+general guidlines:
+
+s for spheres: we use the same expression for delta, for both/all directions (preferably for the problem
+where we have neumann/dirichlet conditions at the bottom of the domain.
+
+c for cylinders: we use two different expressions of delta to express the non-isotropic nature of the porous 
+medium we are considering (rods/forest)

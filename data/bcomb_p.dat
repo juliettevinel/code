@@ -1,0 +1,8 @@
+a
+
+
+// defining the P boundary condition (top-right) combination
+// a: top/bottom=Neumann, left/right=outflow
+// b: top/bottom=Neumann, right=Dirichlet
+// c: top/bottom=Neumann, bottom Neumann, left/right = periodic
+

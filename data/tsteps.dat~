@@ -1,0 +1,7 @@
+10000
+1
+250
+
+// First line : number of time iterations
+// Second line : minimum number of steps before first output
+// Third line : // number of time iterations in between output sampling

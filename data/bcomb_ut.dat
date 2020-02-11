@@ -1,0 +1,9 @@
+o
+
+
+
+
+// defining the U boundary condition at the top
+// w: top = wall,
+// o: top = outflow
+// d: top = dirichlet

@@ -1,0 +1,15 @@
+500	200
+10.	4.
+
+75	125
+150	200
+
+
+x	y
+First line resolution, 
+second line grid dimensions.
+
+4th line :  min & max limits along the y
+6th line :  min & max limits along the x
+
+Please maintain file structure and tabulation in order to ensure proper function

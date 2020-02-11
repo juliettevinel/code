@@ -1,0 +1,11 @@
+2
+
+// defining the U boundary condition (left-right) combination
+// 1: left,right = periodic 
+// 2: left=inflow, right=outflow  
+// 3: left=outflow, right = outflow  
+
+
+
+PLEASE SEPARATE WALL FROM DIRICHLET.
+IF WALL IS SET, THEN IT SHOULD BE WALL FOR BOTH U AND V
