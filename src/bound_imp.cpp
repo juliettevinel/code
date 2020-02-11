@@ -611,8 +611,8 @@ void imp_bound_Y (double** Y, double val_left, double val_top, double val_bot, i
 	else if (Bcomb_Y == 2) {
 		// LEFT DIRICHLET AND RIGHT NEUMANN ZERO
 		for (int j=1 ; j<=m ; j++)
-            Y[0][j] = 2.- Y[1][j];// Temperature boundary conditions. It is called only in the first step.*val_left - Y[1][j];
-		  //Y[0][j] = Y[1][j];
+            Y[0][j] = 2.- Y[1][j];// Temperature boundary conditions. It is called only in the first step.*val_left - temp[1][j];
+		  //temp[0][j] = temp[1][j];
 		  
 
 		for (int j=1; j <= m ; j++ )
@@ -641,7 +641,7 @@ void imp_bound_Y (double** Y, double val_left, double val_top, double val_bot, i
 			Y[i][0] = 2.*val_bot - Y[i][1] ;
 	}
 	else
-		cout << "ERROR APPLYING THE Y BOUNDARY CONDITION - TOP-BOTTOM B" ;
+		cout << "ERROR APPLYING THE TEMP BOUNDARY CONDITION - TOP-BOTTOM B" ;
 
 }
 
@@ -661,7 +661,7 @@ void imp_bound_Y_conv (double** Y, double** Y0, double val_left, double val_top,
 		// LEFT DIRICHLET
 		for (int j=1 ; j<=m ; j++)
 		  Y[0][j] = 2.*val_left - Y[1][j];
-		  //Y[0][j] = Y[1][j];
+		  //temp[0][j] = temp[1][j];
 		  
 		// RIGHT CONVECTIVE
 		right_bound_conv(Y,Y0, Uc, n,m, cells, dt);
@@ -691,7 +691,7 @@ void imp_bound_Y_conv (double** Y, double** Y0, double val_left, double val_top,
 			Y[i][0] = 2.*val_bot - Y[i][1] ;
 	}
 	else
-		cout << "ERROR APPLYING THE Y BOUNDARY CONDITION - TOP-BOTTOM B" ;
+		cout << "ERROR APPLYING THE TEMP BOUNDARY CONDITION - TOP-BOTTOM B" ;
 
 }
 
@@ -713,7 +713,7 @@ void imp_bound_temp_s (double** temp, double val_bot, int i_min, int i_max, int 
 	for (int i=i_min ; i<=i_max ; i++)
 	  temp[i][j_min-1] = temp[i][j_min] ;
 
-	
+	/*
 	if (Bcomb_Tt == 'o'){
 		//bottom - Neumann zero
 		for (int i=0 ; i<=n+1 ; i++)
@@ -726,7 +726,7 @@ void imp_bound_temp_s (double** temp, double val_bot, int i_min, int i_max, int 
 	}
 	else
 		cout << "ERROR APPLYING THE TEMP_S BOUNDARY CONDITION - BOTTOM" ;
-	
+	*/
 
 }
 
@@ -796,6 +796,9 @@ void imp_bound_cells (grid cells, int n, int m) {
   cells.rj[m+1] = cells.rj[m] ;
 
 }
+
+
+
 
 
 void imp_bound_mat (double** mat, int n , int m) {

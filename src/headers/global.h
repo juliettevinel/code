@@ -111,8 +111,8 @@ const char Bcomb_Yt = readchar("../data/bcomb_Yt.dat") ;
 	const double Pval_r = readdouble("../data/pval_r.dat");
 	const double Pder_r = readdouble("../data/pder_r.dat");
 
-	const double Yval_t = readdouble("../data/Yval_t.dat");
-	const double Yval_b = readdouble("../data/Yval_b.dat");
+	const double Tval_t = readdouble("../data/Yval_t.dat");
+	const double Tval_b = readdouble("../data/Yval_b.dat");
 
 // ENDOF BOUNDARY CONDITION SETS & VALUES
 

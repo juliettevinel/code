@@ -36,9 +36,9 @@ void imp_bound_v_tild (char type_top, char type_bot, double** mat, int n, int m)
 
 void imp_bound_v_tild_conv (char type_top, char type_bot, double* u_infl, double** mat, double** mat0, double* Uc, int n, int m,  grid cells, double dt) ;
 
-void imp_bound_temp (double** temp, double val_left, double val_top, double val_bot, int n, int m) ;
+void imp_bound_Y (double** Y, double val_left, double val_top, double val_bot, int n, int m) ;
 
-void imp_bound_temp_conv (double** temp, double** temp0, double val_left, double val_top, double val_bot, double *Uc, int n, int m, grid cells, double dt) ;
+void imp_bound_Y_conv (double** Y, double** Y0, double val_left, double val_top, double val_bot, double *Uc, int n, int m, grid cells, double dt) ;
 
 void imp_bound_temp_s (double** temp, double val_bot, int i_min, int i_max, int j_min, int j_max) ;
 

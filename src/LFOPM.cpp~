@@ -67,7 +67,7 @@ int main () {
 	tdata >> t >> step_init >> dt ;
 	tdata.close();
 
-// to read things from tstep_data  (converts chars to int)
+
 	ifstream tstep_data;
 	tstep_data.open("../data/tsteps.dat");  if (! tstep_data.is_open()) cout << "input file error, tsteps.dat" ;
 
@@ -86,7 +86,7 @@ int main () {
 	uval_b = readdouble("../data/uval_b.dat");
 	vval_b = readdouble("../data/vval_b.dat");
 
-// same logic as in the previous use of <<  and  >> 
+
 	cout << "RUN for " << tsteps << " time steps, dt = " << dt << endl;
 
 	cout << endl << "Re no :" <<  Re << "\t Pr no : " << Pr << "\t Ri no: " << Ri << endl;
@@ -187,7 +187,7 @@ int main () {
 	u_infl = new double[m];
 	v_infl = new double[m];
 
-	// preserve consistency with other u matrices : internal cells 1->m (1 is the index of the 1st interior cell)
+	// preserve consistency with other u matrices : internal cells 1->m
 	u_infl--;
 	v_infl--;
 
@@ -222,40 +222,40 @@ int main () {
 
 
 
-	double **rho;
-	rho = matrix_np(n+2,m+2);
-	//double **rho1;
-	//rho1 = matrix_np(n+2,m+2);
-	//double **rhonp1;
-	//rhonp1 = matrix_np(n+2,m+2) ;
-	double **rho_s;
-	rho_s = matrix_np(n+2,m+2);
+	double **rho0;
+	rho0 = matrix_np(n+2,m+2);
+	double **rho1;
+	rho1 = matrix_np(n+2,m+2);
+	double **rhonp1;
+	rhonp1 = matrix_np(n+2,m+2) ;
+	double **rho_st;
+	rho_st = matrix_np(n+2,m+2);
 
-	double **temp ;
-	temp = matrix_np(n+2,m+2);
-	//double **temp1 ;
-	//temp1 = matrix_np(n+2,m+2);
+	double **temp0 ;
+	temp0 = matrix_np(n+2,m+2);
+	double **temp1 ;
+	temp1 = matrix_np(n+2,m+2);
 
-	initialize(temp, 0, n+1, m+1) ;
+	initialize(temp1, 0, n+1, m+1) ;
 
-	double **temp_s ;
-	temp_s = matrix_np(n+2,m+2);
+	double **temp_s0 ;
+	temp_s0 = matrix_np(n+2,m+2);
 
-	//double **temp_s1 ;
-	//temp_s1 = matrix_np(n+2,m+2);
+	double **temp_s1 ;
+	temp_s1 = matrix_np(n+2,m+2);
 
-	//double **res_ts0;
-	//res_ts0 = matrix_n(n,m);
-	//double **res_ts1;
-	//res_ts1 = matrix_n(n,m);
+	double **res_ts0;
+	res_ts0 = matrix_n(n,m);
+	double **res_ts1;
+	res_ts1 = matrix_n(n,m);
 
-	//initialize (res_ts0, 1,n,m) ;
-	//initialize (res_ts1, 1,n,m) ;
+	initialize (res_ts0, 1,n,m) ;
+	initialize (res_ts1, 1,n,m) ;
 
-	double **res_Y0;
-	res_Y0 = matrix_n(n,m);
-	double **res_Y1;
-	res_Y1 = matrix_n(n,m);
+	double **res_t0;
+	res_t0 = matrix_n(n,m);
+	double **res_t1;
+	res_t1 = matrix_n(n,m);
 
 	double **h;
 	h = matrix_n(n,m) ;
@@ -263,11 +263,11 @@ int main () {
 	double **kf ;
 	kf = matrix_np(n+2,m+2) ;
 
-	//double **ks_x ;
-	//ks_x = matrix_np(n+2,m+2) ;
+	double **ks_x ;
+	ks_x = matrix_np(n+2,m+2) ;
 
-	//double **ks_y ;
-	//ks_y = matrix_np(n+2,m+2) ;
+	double **ks_y ;
+	ks_y = matrix_np(n+2,m+2) ;
 
 	initialize(kf, 0, n+1, m+1) ;
 
@@ -286,22 +286,7 @@ int main () {
 	mass_balance = new double[5] ;
 	mass_balance--;
 
-    // variables rajoutees
-    
-    double **Y0 ;
-    Y0 = matrix_np(n+2,m+2);
-    initialize(Y0, 0, n+1, m+1) ;
-    double **Y1 ;
-    Y1 = matrix_np(n+2,m+2);
-    initialize(Y1, 0, n+1, m+1) ;
-    
-    double **D ;
-    D = matrix_np(n+2,m+2) ;
-    initialize(D, 0, n+1, m+1) ;
-    
-    double **R;
-    R = matrix_n(n,m);
-    
+
 	/* A AND B MATRICES OF THE LINEAR SYSTEM****/
 
 	//sparce storage of matrix A, consists of 1D matrix A, + the position matrix
@@ -333,6 +318,11 @@ int main () {
 	double *matB ;
 		matB = new double[n*m] ;
 		matB --;
+
+
+
+
+
 
 
 		/************
@@ -373,49 +363,35 @@ int main () {
  *         LOAD INITIAL DATA
  ******************************************/
 
-    // valeur initiales pour rho et temp vu qu'on les considere constants
-    
-    for (int i=1 ; i<=n ; i++)
-    for (int j=1 ; j<=m ; j++)
-        temp[i][j] = 1.;
-    
-    for (int i=1 ; i<=n ; i++)
-    for (int j=1 ; j<=m ; j++)
-        temp_s[i][j] = 1.5;
-    
-    for (int i=1 ; i<=n ; i++)
-        for (int j=1 ; j<=m ; j++)
-            R[i][j] = 0.;
-
 	for (int i=1 ; i<=n ; i++)
 		for (int j=1 ; j<=m ; j++)
 			cp[i][j] = 1.;
 
 
-	fillval(Y1, n,m, "../init/centY.txt") ;
-	imp_bound_Y(Y1, 1., Yval_t, Yval_b, n,m) ;
+	fillval(temp1, n,m, "../init/centtemp.txt") ;
+	imp_bound_temp(temp1, 1., Tval_t, Tval_b, n,m) ;
 
-	replace(Y0, Y1, 0, n+1, m+1) ;
+	replace(temp0, temp1, 0, n+1, m+1) ;
 	
 
 
-	//fillval(temp_s1, n,m, "../init/centtemp_s.txt") ;
-	//imp_bound_temp_s(temp_s1, Tval_b, pmedia_imin, pmedia_imax, pmedia_jmin,pmedia_jmax) ;
+	fillval(temp_s1, n,m, "../init/centtemp_s.txt") ;
+	imp_bound_temp_s(temp_s1, Tval_b, pmedia_imin, pmedia_imax, pmedia_jmin,pmedia_jmax) ;
 
-	//replace(temp_s0, temp_s1, 0, n+1, m+1) ;
+	replace(temp_s0, temp_s1, 0, n+1, m+1) ;
 
 
-	//ks_compu (ks_x, ks_y, temp_s0, n,m) ;
+	ks_compu (ks_x, ks_y, temp_s0, n,m) ;
 	
 
 
 	// integration dummy holding the cumulative sum
-	//double integ_d = 0.;
+	double integ_d = 0.;
 
 	// integ (1/T)dv
-	//for (int i=1 ; i<=n ; i++)
-		//for (int j=1 ; j<=m ; j++)
-			//integ_d += phin[i][j] * (2.*cells.ri[i]) * (2.*cells.rj[j]) / temp1[i][j] ;
+	for (int i=1 ; i<=n ; i++)
+		for (int j=1 ; j<=m ; j++)
+			integ_d += phin[i][j] * (2.*cells.ri[i]) * (2.*cells.rj[j]) / temp1[i][j] ;
 
 
 	double M_zero = 0.;
@@ -429,36 +405,36 @@ int main () {
 	
 	for( int i=1 ; i<=n ; i++)
 	  for (int j=1 ; j<=m ; j++)
-	    rho[i][j] = p0[1] / temp[i][j] ;
+	    rho1[i][j] = p0[1] / temp1[i][j] ;
 	    
 
 
 	//	fillval(rho1, n,m, "../init/centrho.txt") ;
 
-	//imp_bound_rho(rho1, p0[1], temp1, n,m) ;
+	imp_bound_rho(rho1, p0[1], temp1, n,m) ;
 
-	//replace(rho0,rho1, 0, n+1, m+1) ;
+	replace(rho0,rho1, 0, n+1, m+1) ;
 
 	//	fillval(rho0, n,m, "../init/centrhom1.txt") ;
 	//imp_bound_rho(rho0, p0[1], temp1, n,m) ;
 
 
-	replace(rho_s, rho, 0, n+1, m+1) ;
-	//replace(rhonp1, rho1, 0, n+1, m+1) ;
+	replace(rho_st, rho1, 0, n+1, m+1) ;
+	replace(rhonp1, rho1, 0, n+1, m+1) ;
 
 
 
 	  for (int i=1 ; i<=n ; i++)
 	    for (int j=1 ; j<=m ; j++)
-	      M_zero += rho[i][j] * phin[i][j] * 4. *cells.ri[i] *cells.rj[j] ;
+	      M_zero += rho1[i][j] * phin[i][j] * 4. *cells.ri[i] *cells.rj[j] ;
 	
 
-	 M_re_compu(M_re, temp, phi_sn, n,m) ;
+	 M_re_compu(M_re, temp1, phi_sn, n,m) ;
 
 
 
 
-	renew_mu_k(mu, kf, temp, 0, n+1, m+1) ;
+	renew_mu_k(mu, kf, temp1, 0, n+1, m+1) ;
 
 
 
@@ -482,10 +458,7 @@ int main () {
 	}
 
 
-
-	// THE FOLLOWING COMMENTS APPLY PERTURBATIONS ON THE VELOCITIES
-
-/*  
+/*
 	srand(194585);
 	double dumrand1, dumrand2 ;
 
@@ -534,7 +507,7 @@ int main () {
 	
 	double phiUc ;
 
-	calc_Uc (phiUc, M_re, rho, rho, phinp1, phin, u_infl, n,m, cells, dt) ;
+	calc_Uc (phiUc, M_re, rhonp1, rho1, phinp1, phin, u_infl, n,m, cells, dt) ;
 	
 	double* Uc;
 	Uc = new double[m] ;
@@ -546,36 +519,36 @@ int main () {
 
 
 	if (delta_rank == 'c') {
-		filldelta(delta_x,1,n,m,u1,phin, rho,mu);
-		filldelta(delta_y,2,n,m,v1,phin, rho,mu);
+		filldelta(delta_x,1,n,m,u1,phin, rho1,mu);
+		filldelta(delta_y,2,n,m,v1,phin, rho1,mu);
 	}
 	else if (delta_rank == 's') {
-	  filldelta_s(delta_x,u1,v1,rho_s,mu,phin,n,m);
-	  filldelta_s(delta_y,u1,v1,rho_s,mu,phin,n,m);
+	  filldelta_s(delta_x,u1,v1,rho_st,mu,phin,n,m);
+	  filldelta_s(delta_y,u1,v1,rho_st,mu,phin,n,m);
 	}
 
 
 
 
-	fluxinit(f1, f2, u1, v1, rho, phin, n, m, cells) ;
+	fluxinit(f1, f2, u1, v1, rho1, phin, n, m, cells) ;
 
-	rescompu(resu1,resv1, u1,v1, f1,f2, phin, rho, mu, F, n,m,cells) ;
+	rescompu(resu1,resv1, u1,v1, f1,f2, phin, rho1, mu, F, n,m,cells) ;
 
 	replace(resu0, resu1, 1, n,m ) ;
 	replace(resv0, resv1, 1, n,m ) ;
 
-	h_compu(h,u1, v1, rho, mu, kf, phin, n,m );
+	h_compu(h,u1, v1, rho1, mu, kf, phin, n,m );
 
-	res_Y_compu(res_Y1, f1,f2, Y1, rho, phin,D,R, cells, n,m) ;
-	replace (res_Y0, res_Y1, 1, n,m) ;
-
-	
-	//ks_compu (ks_x, ks_y, temp_s1, n,m) ;
-	//res_ts_compu (res_ts1, temp_s1, temp1, phi_sn, ks_x, M_re, h, cells, pmedia_imin, pmedia_imax, pmedia_jmin , pmedia_jmax ) ;
+	res_t_compu(res_t1, f1,f2, temp1, temp_s1, rho1, phin, cp, M_re, p0[1], h, kf, cells, n,m) ;
+	replace (res_t0, res_t1, 1, n,m) ;
 
 	
+	ks_compu (ks_x, ks_y, temp_s1, n,m) ;
+	res_ts_compu (res_ts1, temp_s1, temp1, phi_sn, ks_x, M_re, h, cells, pmedia_imin, pmedia_imax, pmedia_jmin , pmedia_jmax ) ;
 
-	//replace (res_ts0, res_ts1) ;
+	
+
+	replace (res_ts0, res_ts1) ;
 		      
 		     
 
@@ -583,7 +556,7 @@ int main () {
 	//fillval_bug(p2D, n,m, "../init/centp_db.txt") ;
 	fillval(p2D, n,m, "../init/centp.txt") ;
 
-	imp_bound_p(p2D , rho, n , m , y_val, cells) ;
+	imp_bound_p(p2D , rho1, n , m , y_val, cells) ;
 
 	convert_to_1d(p, p2D, n,m) ;
 
@@ -592,9 +565,9 @@ int main () {
 
 	// This is needed only so that we can apply the convective boundary condition later on. 
 	// Therefore, only the utilde_i is of interest
-	  calc_utilde_pred(utilde_i,utilde_j, u1,v1, resu1,resv1,resu0,resv0, p2D, rho_s,rho,mu,phist, phin, delta_x, delta_y, y_val, cells,n,m,dt, flag ) ;
+	  calc_utilde_pred(utilde_i,utilde_j, u1,v1, resu1,resv1,resu0,resv0, p2D, rho_st,rho1,mu,phist, phin, delta_x, delta_y, y_val, cells,n,m,dt, flag ) ;
 	  // boundary conditions for utilde
-	  imp_bound_u_tild(Bcomb_ut, Bcomb_ub, p2D, rho, u_infl, utilde_i, n,m, dimy, cells, dt) ;
+	  imp_bound_u_tild(Bcomb_ut, Bcomb_ub, p2D, rho1, u_infl, utilde_i, n,m, dimy, cells, dt) ;
 	  imp_bound_v_tild(Bcomb_vt, Bcomb_vb, utilde_j, n,m) ;
 
 	  replace(utilde_i0, utilde_i, 0, n+1, m+1) ;
@@ -620,15 +593,15 @@ int main () {
 	double dt_cand_u, dt_cand_v ;  // candidate for next dt value;
 
 
-	double Y_inflow = 0.;
+	double temp_inflow = 1.; 
 
 
-	for (int ti = 1 + step_init ; ti <= tsteps ; ti++) {  // ti for t_i, integer number of step
+	for (int ti = 1 + step_init ; t <= 100. ; ti++) {  // ti for t_i, integer number of step
 	  
 	  if (t<4.)
-          Y_inflow = 0.; //1.5/4. *t + 1.;
+	    temp_inflow = 1.5/4. *t + 1.;
 	  else
-          Y_inflow = 2.5;//2.5 ;
+	    temp_inflow = 2.5 ;
 	  
 
 
@@ -640,36 +613,36 @@ int main () {
 
 		//temp0 -> (n)
 		//calculate T*, T_s*
-	  replace(Y0, Y1) ;
-	  calc_Y_pred(Y1,Y0,rho,rho_s, res_Y1,res_Y0, p0,M_zero,D, phin, n,m, pmedia_jmax, cells, dt);
+	  replace(temp0, temp1) ;
+	  calc_t_pred(temp1,temp0, temp_s1, rho1,rho_st, res_t1,res_t0, p0,M_zero,cp, kf, phin, n,m, pmedia_jmax, cells, dt);
 
 	  //	  update_ign(temp1, t) ;
 
-	  imp_bound_Y_conv(Y1, Y0, Y_inflow, Yval_t, Yval_b, Uc, n,m, cells, dt) ;
-	 // imp_bound_rho(rho_st, p0[2], temp1, n,m) ;
+	  imp_bound_temp_conv(temp1, temp0, temp_inflow, Tval_t, Tval_b, Uc, n,m, cells, dt) ;
+	  imp_bound_rho(rho_st, p0[2], temp1, n,m) ;
 
 
-	  renew_mu_k(mu, kf, temp, 0, n+1, m+1) ;
+	  renew_mu_k(mu, kf, temp1, 0, n+1, m+1) ;
 
 	  
-	//  replace(temp_s0,temp_s1) ;
-	 // calc_ts_pred(temp_s1, temp_s0, res_ts1, res_ts0, ks_y, phi_sn, pmedia_imin, pmedia_imax, pmedia_jmin , pmedia_jmax , cells, dt) ;
+	  replace(temp_s0,temp_s1) ;
+	  calc_ts_pred(temp_s1, temp_s0, res_ts1, res_ts0, ks_y, phi_sn, pmedia_imin, pmedia_imax, pmedia_jmin , pmedia_jmax , cells, dt) ;
 
 	  //	  update_ign(temp_s1, t) ;
 
-	  //imp_bound_temp_s(temp_s1, Tval_b, pmedia_imin, pmedia_imax, pmedia_jmin,pmedia_jmax) ;
+	  imp_bound_temp_s(temp_s1, Tval_b, pmedia_imin, pmedia_imax, pmedia_jmin,pmedia_jmax) ;
 	  
 
-	 // ks_compu(ks_x, ks_y, temp_s1, n,m) ;
+	  ks_compu(ks_x, ks_y, temp_s1, n,m) ;
 
 
 	  replace(utilde_i0, utilde_i, 0, n+1, m+1) ;
 	  replace(utilde_j0, utilde_j, 0, n+1, m+1) ;
 
 	  // ATTENTION : UTILDE CALCULATION CONFIGURED FOR WALL ON TOP
-	  calc_utilde_pred(utilde_i,utilde_j, u1,v1, resu1,resv1,resu0,resv0, p2D, rho_s,rho,mu,phist, phin, delta_x, delta_y, y_val, cells,n,m,dt, flag ) ;
+	  calc_utilde_pred(utilde_i,utilde_j, u1,v1, resu1,resv1,resu0,resv0, p2D, rho_st,rho1,mu,phist, phin, delta_x, delta_y, y_val, cells,n,m,dt, flag ) ;
 	  // boundary conditions for utilde
-	  imp_bound_u_tild_conv(Bcomb_ut, Bcomb_ub, p2D, rho, u_infl, utilde_i, utilde_i0, Uc, n,m, dimy, cells, dt) ;
+	  imp_bound_u_tild_conv(Bcomb_ut, Bcomb_ub, p2D, rho1, u_infl, utilde_i, utilde_i0, Uc, n,m, dimy, cells, dt) ;
 	  imp_bound_v_tild_conv(Bcomb_vt, Bcomb_vb, v_infl, utilde_j, utilde_j0, Uc, n,m, cells, dt) ;
 
 
@@ -685,9 +658,9 @@ int main () {
 	  }
 
 
-	  calc_p (p2D,p, matA,matA_pos,precond,matB, utilde_i, utilde_j, rho,rho, rho_s, phin, phinm1, phist, M_re, y_val, cells, n,m,dt, flag, ti) ;
+	  calc_p (p2D,p, matA,matA_pos,precond,matB, utilde_i, utilde_j, rho1,rho0, rho_st, phin, phinm1, phist, M_re, y_val, cells, n,m,dt, flag, ti) ;
 	  // boundary conditions for pressure
-	  imp_bound_p(p2D ,rho_s, n , m , y_val, cells) ;
+	  imp_bound_p(p2D ,rho_st, n , m , y_val, cells) ;
 
 
 	  /*
@@ -713,11 +686,11 @@ int main () {
 	  replace(u0,u1) ;
 	  replace(v0,v1) ;
 
-	  calc_vel (u1,v1, utilde_i, utilde_j, p2D, rho_s, n,m, y_val, cells, dt) ;
+	  calc_vel (u1,v1, utilde_i, utilde_j, p2D, rho_st, n,m, y_val, cells, dt) ;
 	  //impose boundary conditions to u*
 
 	  if (Bcomb_vel == 2)
-	    calc_Uc (phiUc, M_re, rho_s, rho, phist, phin, u_infl, n,m, cells, dt) ;
+	    calc_Uc (phiUc, M_re, rho_st, rho1, phist, phin, u_infl, n,m, cells, dt) ;
 
 	  for (int j=1 ; j<=m ; j++)
 	    Uc[j] = phiUc /phist[n][j] ;
@@ -733,16 +706,16 @@ int main () {
 	  //
 
 
-	  fluxcompu(f1, f2, utilde_i, utilde_j, rho_s, phist, p2D, y_val, cells, n, m, dt) ;
+	  fluxcompu(f1, f2, utilde_i, utilde_j, rho_st, phist, p2D, y_val, cells, n, m, dt) ;
 
 
 	  if (delta_rank == 'c') {
-	    filldelta(delta_x,1,n,m,u1,phist, rho_s,mu);
-	    filldelta(delta_y,2,n,m,v1,phist, rho_s,mu);
+	    filldelta(delta_x,1,n,m,u1,phist, rho_st,mu);
+	    filldelta(delta_y,2,n,m,v1,phist, rho_st,mu);
 	  }
 	  else if (delta_rank == 's') {
-	    filldelta_s(delta_x,u1,v1,rho_s,mu,phist,n,m);
-	    filldelta_s(delta_y,u1,v1,rho_s,mu,phist,n,m);
+	    filldelta_s(delta_x,u1,v1,rho_st,mu,phist,n,m);
+	    filldelta_s(delta_y,u1,v1,rho_st,mu,phist,n,m);
 	  }
 
 
@@ -754,21 +727,21 @@ int main () {
 	  replace(resu0,resu1);
 	  replace(resv0,resv1);
 
-	  rescompu(resu1, resv1, u1,v1, f1,f2, phist, rho_s, mu, F, n,m,cells) ;
+	  rescompu(resu1, resv1, u1,v1, f1,f2, phist, rho_st, mu, F, n,m,cells) ;
 
-	  h_compu(h,u1, v1, rho_s, mu, kf, phist, n,m );
+	  h_compu(h,u1, v1, rho_st, mu, kf, phist, n,m );
 
-	  M_re_compu(M_re, temp, phi_sst, n,m) ;
+	  M_re_compu(M_re, temp1, phi_sst, n,m) ;
 
 	  // the same for res_t
-	  replace(res_Y0, res_Y1) ;
+	  replace(res_t0, res_t1) ;
 
-	  res_Y_compu(res_Y1, f1,f2, Y1, rho_s, phist, D,R, cells, n,m) ;
+	  res_t_compu(res_t1, f1,f2, temp1, temp_s1, rho_st, phist, cp, M_re, p0[2], h, kf, cells, n,m) ;
 
 	  // the same for res_ts
-	//  replace(res_ts0, res_ts1) ;
+	  replace(res_ts0, res_ts1) ;
 	  
-	  //res_ts_compu(res_ts1, temp_s1, temp1, phi_sst, ks_x, M_re, h, cells, pmedia_imin, pmedia_imax, pmedia_jmin , pmedia_jmax ) ;
+	  res_ts_compu(res_ts1, temp_s1, temp1, phi_sst, ks_x, M_re, h, cells, pmedia_imin, pmedia_imax, pmedia_jmin , pmedia_jmax ) ;
 
 
 	  //ENDOF ALL U* PROCEDURES
@@ -824,35 +797,35 @@ int main () {
 
 	  //temp0 -> (n)
 	  //temp1 -> (n+1)
-	  calc_Y_corr(Y1,Y0, rho, rho_s, res_Y1,res_Y0, p0,M_zero,D, phinp1, phist, phin, n,m, pmedia_jmax, cells, dt);
+	  calc_t_corr(temp1,temp0, temp_s0, rhonp1, rho_st, res_t1,res_t0, p0,M_zero, cp, kf, phinp1, phist, phin, n,m, pmedia_jmax, cells, dt);
 
 	  //	  update_ign(temp1, t) ;
 
-	  imp_bound_Y_conv(Y1, Y0, Y_inflow, Yval_t, Yval_b, Uc, n,m, cells, dt) ;
-	  //imp_bound_rho (rhonp1, p0[2], temp1,  n,m) ;
+	  imp_bound_temp_conv(temp1, temp0, temp_inflow, Tval_t, Tval_b, Uc, n,m, cells, dt) ;
+	  imp_bound_rho (rhonp1, p0[2], temp1,  n,m) ;
 
 
 	  
-	  renew_mu_k(mu, kf, temp, 0, n+1, m+1) ;
+	  renew_mu_k(mu, kf, temp1, 0, n+1, m+1) ;
 
-	  //calc_ts_corr(temp_s1, temp_s0, res_ts1, res_ts0, ks_y, phi_sst, pmedia_imin, pmedia_imax, pmedia_jmin , pmedia_jmax , cells, dt) ;
+	  calc_ts_corr(temp_s1, temp_s0, res_ts1, res_ts0, ks_y, phi_sst, pmedia_imin, pmedia_imax, pmedia_jmin , pmedia_jmax , cells, dt) ;
 
 	  //	  update_ign(temp_s1, t) ;
 
-	  //imp_bound_temp_s(temp_s1, Tval_b, pmedia_imin, pmedia_imax, pmedia_jmin,pmedia_jmax) ;
+	  imp_bound_temp_s(temp_s1, Tval_b, pmedia_imin, pmedia_imax, pmedia_jmin,pmedia_jmax) ;
 
 	  
 
-	 // ks_compu(ks_x, ks_y, temp_s1, n,m) ;
+	  ks_compu(ks_x, ks_y, temp_s1, n,m) ;
 
 
 
 
 
 	  // ATTENTION : UTILDE CALCULATION CONFIGURED FOR WALL ON TOP
-	  calc_utilde_corr(utilde_i,utilde_j, u0,v0, resu1,resv1,resu0,resv0, p2D, rho,rho,mu,phinp1, phin, delta_x, delta_y, y_val, cells,n,m,dt, flag ) ;
+	  calc_utilde_corr(utilde_i,utilde_j, u0,v0, resu1,resv1,resu0,resv0, p2D, rhonp1,rho1,mu,phinp1, phin, delta_x, delta_y, y_val, cells,n,m,dt, flag ) ;
 	  // boundary conditions for utilde
-	  imp_bound_u_tild_conv(Bcomb_ut, Bcomb_ub, p2D, rho, u_infl, utilde_i, utilde_i0, Uc, n,m, dimy, cells, dt) ;
+	  imp_bound_u_tild_conv(Bcomb_ut, Bcomb_ub, p2D, rho1, u_infl, utilde_i, utilde_i0, Uc, n,m, dimy, cells, dt) ;
 	  imp_bound_v_tild_conv(Bcomb_vt, Bcomb_vb, v_infl, utilde_j, utilde_j0, Uc, n,m, cells, dt) ;
 
 
@@ -867,19 +840,19 @@ int main () {
 	  		return 0;
 	  }
 
-	  calc_p (p2D,p, matA,matA_pos,precond,matB, utilde_i, utilde_j, rho,rho, rho, phin, phinm1, phinp1, M_re, y_val, cells, n,m,dt, flag, ti) ;
+	  calc_p (p2D,p, matA,matA_pos,precond,matB, utilde_i, utilde_j, rho1,rho0, rhonp1, phin, phinm1, phinp1, M_re, y_val, cells, n,m,dt, flag, ti) ;
 	  // boundary conditions for pressure
-	  imp_bound_p(p2D ,rho, n , m , y_val, cells) ;
+	  imp_bound_p(p2D ,rhonp1, n , m , y_val, cells) ;
 
 	  // It's the corrector stage, so we don't want to replace the (n) values with the (*) values
 	  // replace(u0,u1, 0, n+1,m+1);
 	  // replace(v0,v1, 0, n+1,m+1);
 
-	  calc_vel (u1,v1, utilde_i, utilde_j, p2D, rho, n,m, y_val, cells, dt) ;
+	  calc_vel (u1,v1, utilde_i, utilde_j, p2D, rhonp1, n,m, y_val, cells, dt) ;
 	  //impose boundary conditions to u1
 
 	  if (Bcomb_vel == 2)
-	    calc_Uc (phiUc, M_re, rho, rho, phinp1, phin, u_infl, n,m, cells, dt) ;
+	    calc_Uc (phiUc, M_re, rhonp1, rho1, phinp1, phin, u_infl, n,m, cells, dt) ;
 
 	  for (int j=1 ; j<=m ; j++)
 	    Uc[j] = phiUc /phinp1[n][j] ;
@@ -894,27 +867,26 @@ int main () {
 	  // calculate new (n+1) values to be used as (n) values at the next predictor step
 
 
-	  fluxcompu(f1, f2, utilde_i, utilde_j, rho, phinp1, p2D, y_val, cells, n, m, dt) ;
+	  fluxcompu(f1, f2, utilde_i, utilde_j, rhonp1, phinp1, p2D, y_val, cells, n, m, dt) ;
 
 
 	  if (delta_rank == 'c') {
-	    filldelta(delta_x,1,n,m,u1,phinp1, rho,mu);
-	    filldelta(delta_y,2,n,m,v1,phinp1, rho,mu);
+	    filldelta(delta_x,1,n,m,u1,phinp1, rhonp1,mu);
+	    filldelta(delta_y,2,n,m,v1,phinp1, rhonp1,mu);
 	  }
 	  else if (delta_rank == 's') {
-	    filldelta_s(delta_x,u1,v1,rho,mu,phinp1,n,m);
-	    filldelta_s(delta_y,u1,v1,rho,mu,phinp1,n,m);
+	    filldelta_s(delta_x,u1,v1,rhonp1,mu,phinp1,n,m);
+	    filldelta_s(delta_y,u1,v1,rhonp1,mu,phinp1,n,m);
 	  }
 
 
 	  // SOLVER DEBUGGING PACKAGE, corrector
-	      /*
 	  if (( ti >= ti_min)&&( ti%sample_out == 0 )) {  // output
 
 	    convert_to_2d(mb2d, matB, n,m) ;
 	    flushdata( mb2d, n,m, "mb", ti) ;
 
-
+	      /*
 	    flushdata(res_t1, n,m, "rt",ti) ;
 	    constr_b_testa (testB, utilde_i, utilde_j, rho1, rho0, rhonp1, phi, n,m,cells, dt) ;		
 	    dimensionalize (mb2d, testB, n,m) ;
@@ -926,16 +898,16 @@ int main () {
 	      
 	    dimensionalize (mb2d, testB, n,m) ;
 	    flushdata (mb2d, n,m, "tb2", ti) ;
-
+	      */
 	    }
-	      */	  
+	  
 
 
 	  // It's the corrector stage, so we don't want to replace the (n) values with the (*) values
 	  //replace(resu0, resu1) ;
 	  //replace(resv0, resv1) ;
 
-	  rescompu(resu1, resv1, u1,v1, f1,f2, phinp1, rho, mu, F, n,m,cells) ;
+	  rescompu(resu1, resv1, u1,v1, f1,f2, phinp1, rhonp1, mu, F, n,m,cells) ;
 
 
 	  //
@@ -943,55 +915,55 @@ int main () {
 	  // re-interation of the temperatures
 
 	  // first calculate res_t with the new velocities and densities.
-	  res_Y_compu(res_Y1, f1,f2, Y1, rho ,phinp1, cp, D,R, cells, n,m) ;
+	  res_t_compu(res_t1, f1,f2, temp1, temp_s1, rhonp1 ,phinp1, cp, M_re, p0[2], h, kf, cells, n,m) ;
 
-	  //res_ts_compu(res_ts1, temp_s1, temp1, phi_snp1, ks_x, M_re, h, cells, pmedia_imin, pmedia_imax, pmedia_jmin , pmedia_jmax ) ;
+	  res_ts_compu(res_ts1, temp_s1, temp1, phi_snp1, ks_x, M_re, h, cells, pmedia_imin, pmedia_imax, pmedia_jmin , pmedia_jmax ) ;
 
 
-	  calc_Y_corr(Y1,Y0, rhonp1, rho, res_Y1,res_Y0, p0,M_zero, D, phinp1, phinp1, phinp1, n,m, pmedia_jmax, cells, dt);
+	  calc_t_corr(temp1,temp0, temp_s0, rhonp1, rhonp1, res_t1,res_t0, p0,M_zero, cp, kf, phinp1, phinp1, phinp1, n,m, pmedia_jmax, cells, dt);
 
 	  //	  update_ign(temp1, t) ;
 
-	  imp_bound_Y_conv(Y1, Y0, Y_inflow,Yval_t, Yval_b, Uc, n,m, cells, dt) ;
-	  //imp_bound_rho (rhonp1, p0[2], temp1,  n,m) ;
+	  imp_bound_temp_conv(temp1, temp0, temp_inflow,Tval_t, Tval_b, Uc, n,m, cells, dt) ;
+	  imp_bound_rho (rhonp1, p0[2], temp1,  n,m) ;
 
 
 	  
-	  renew_mu_k(mu, kf, temp, 0, n+1, m+1) ;
+	  renew_mu_k(mu, kf, temp1, 0, n+1, m+1) ;
 
-	  //calc_ts_corr(temp_s1, temp_s0, res_ts1, res_ts0, ks_y, phi_snp1, pmedia_imin, pmedia_imax, pmedia_jmin , pmedia_jmax , cells, dt) ;
+	  calc_ts_corr(temp_s1, temp_s0, res_ts1, res_ts0, ks_y, phi_snp1, pmedia_imin, pmedia_imax, pmedia_jmin , pmedia_jmax , cells, dt) ;
 
 	  //	  update_ign(temp_s1, t) ;
 
-	  //imp_bound_temp_s(temp_s1, Tval_b, pmedia_imin, pmedia_imax, pmedia_jmin,pmedia_jmax) ;
+	  imp_bound_temp_s(temp_s1, Tval_b, pmedia_imin, pmedia_imax, pmedia_jmin,pmedia_jmax) ;
 
 	  
 
-	  //ks_compu(ks_x, ks_y, temp_s1, n,m) ;
+	  ks_compu(ks_x, ks_y, temp_s1, n,m) ;
 
 	  //
 	  //************
 	  //
 
 
-	  calc_mass_eq (mass_balance, rho, rho, phinp1, phin, u1, v1, M_re, n,m, cells, dt) ;
+	  calc_mass_eq (mass_balance, rhonp1, rho1, phinp1, phin, u1, v1, M_re, n,m, cells, dt) ;
 
 
-	  h_compu(h,u1, v1, rho, mu, kf, phinp1, n,m );
+	  h_compu(h,u1, v1, rhonp1, mu, kf, phinp1, n,m );
 
-	  M_re_compu(M_re, temp, phi_snp1, n,m) ;
+	  M_re_compu(M_re, temp1, phi_snp1, n,m) ;
 
 
 	  // Same as the comment above for res_T and res_Ts
 	  // replace(res_t0,res_t1,1, n,m);
 
-	  res_Y_compu(res_Y1, f1,f2, Y1, rho,phinp1, D,R, cells, n,m) ;
+	  res_t_compu(res_t1, f1,f2, temp1, temp_s1, rhonp1 ,phinp1, cp, M_re, p0[2], h, kf, cells, n,m) ;
 
-	//  res_ts_compu(res_ts1, temp_s1, temp1, phi_snp1, ks_x, M_re, h, cells, pmedia_imin, pmedia_imax, pmedia_jmin , pmedia_jmax ) ;
+	  res_ts_compu(res_ts1, temp_s1, temp1, phi_snp1, ks_x, M_re, h, cells, pmedia_imin, pmedia_imax, pmedia_jmin , pmedia_jmax ) ;
 
 	  // Re-arrange rho matrices
-	 // replace(rho0, rho1);
-	 // replace(rho1, rhonp1) ;
+	  replace(rho0, rho1);
+	  replace(rho1, rhonp1) ;
 
 	  // Re-arrange phi matrices
 	  replace(phinm1, phin) ;
@@ -1004,7 +976,15 @@ int main () {
 	  p0[1] = p0[2] ;
 
 
-	  
+	  /*
+	    M_zero_test = 0. ;
+
+	    for (int i=1 ; i<=n ; i++)
+	    for (int j=1 ; j<=m ; j++)
+	    M_zero_test += rho1[i][j] * phi[j] * 4. *cells[i][j].ri *cells[i][j].rj ;
+
+	    if (( ti >= ti_min)&&( ti%sample_out == 0 )) cout << "M_zero = " << M_zero_test << "\t p0=" << p0[1] << endl;
+	  */
 
 
 	  // update time
@@ -1033,12 +1013,12 @@ int main () {
 	    flushbug (v1,0,n+1,m+1,"v",ti);
 	    flushbug (p2D,0,n+1,m+1,"p",ti);
  
-	    flushbug (Y1, 0,n+1,m+1, "Y", ti) ;
-	    //flushdata (temp_s1,n,m,"temp_s", ti) ;
+	    flushbug (temp1, 0,n+1,m+1, "temp", ti) ;
+	    flushdata (temp_s1,n,m,"temp_s", ti) ;
 	    //flushdata (res_ts1,n,m,"res_s",ti);
 	    //flushdata (h, n,m, "h", ti) ;
 	    //flushdata (rho1, n,m, "rho", ti) ;
-	    flushbug (rho, 0,n+1,m+1, "rho", ti) ;
+	    flushbug (rho1, 0,n+1,m+1, "rho", ti) ;
 
 	    flushdata (phin, n,m, "phi", ti) ;
 
@@ -1120,25 +1100,25 @@ int main () {
 	delmat_np(kf, n+2, m+2);
 	delmat_n(h, n,m) ;
 
-	//delmat_np(ks_x, n+2, m+2);
-	//delmat_np(ks_y, n+2, m+2);
+	delmat_np(ks_x, n+2, m+2);
+	delmat_np(ks_y, n+2, m+2);
 
-	delmat_n(res_Y1, n,m);
-	delmat_n(res_Y0, n,m);
+	delmat_n(res_t1, n,m);
+	delmat_n(res_t0, n,m);
 
-	//delmat_n(res_ts1, n,pmedia_jmax);
-	//delmat_n(res_ts0, n,pmedia_jmax);
+	delmat_n(res_ts1, n,pmedia_jmax);
+	delmat_n(res_ts0, n,pmedia_jmax);
 
-	delmat_np(temp_s, n+2,m+2) ;
-	//delmat_np(temp_s1, n+2,m+2) ;
+	delmat_np(temp_s0, n+2,m+2) ;
+	delmat_np(temp_s1, n+2,m+2) ;
 
-	delmat_np(temp, n+2,m+2) ;
-	//delmat_np(temp0, n+2,m+2) ;
+	delmat_np(temp1, n+2,m+2) ;
+	delmat_np(temp0, n+2,m+2) ;
 
-	delmat_np(rho, n+2,m+2) ;
-	//delmat_np(rho1, n+2,m+2) ;
-	//delmat_np(rhonp1,n+2,m+2) ;
-	delmat_np(rho_s, n+2,m+2) ;
+	delmat_np(rho0, n+2,m+2) ;
+	delmat_np(rho1, n+2,m+2) ;
+	delmat_np(rhonp1,n+2,m+2) ;
+	delmat_np(rho_st, n+2,m+2) ;
 
 	delmat_np(utilde_i, n+2,m+2) ;
 	delmat_np(utilde_i0, n+2,m+2) ;
